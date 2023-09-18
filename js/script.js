@@ -14,6 +14,41 @@ For assistance:
 // Set the max number of students to display on each page
 const studentsPerPage = 9;
 
+// Dynamically add search bar
+const studentList = document.querySelector('.student-list');
+const linkList = document.querySelector('.link-list');
+const header = document.querySelector('.header');
+const searchHTML = `
+   <label for="search" class="student-search">
+   <span>Search by name</span>
+   <input id="search" placeholder="Search by name...">
+   <button type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
+   </label>
+   `;
+header.insertAdjacentHTML('beforeend', searchHTML)
+
+// Listen for keyboard input and dynamically display search results
+const searchInput = document.querySelector('#search');
+searchInput.addEventListener('keyup', () => {
+   const filteredStudents = [];
+   const searchString = searchInput.value.toLowerCase();
+
+   for (let i = 0; i < data.length; i++) {
+      const currentStudentName = data[i].name.first + data[i].name.last;
+      if (currentStudentName.toLowerCase().includes(searchString)) {
+         filteredStudents.push(data[i]);
+      }
+   }
+
+   if (filteredStudents.length > 0) {
+      addPagination(filteredStudents);
+      showPage(filteredStudents, 1);
+   } else {
+      studentList.innerHTML = '<h3>No search results found.</h3>';
+      linkList.innerHTML = '';
+   }
+});
+
 /***
  * Creates and inserts the elements needed to display a page of 9 students
  * 
@@ -24,7 +59,6 @@ function showPage(list, page) {
    const startIndex = (page * studentsPerPage) - studentsPerPage;
    const endIndex = (page * studentsPerPage);
 
-   const studentList = document.querySelector('.student-list');
    studentList.innerHTML = '';
 
    for (let i = 0; i < list.length; i++) {
@@ -53,7 +87,6 @@ function showPage(list, page) {
  */
 function addPagination(list) {
    const numOfPages = Math.ceil(list.length / studentsPerPage);
-   const linkList = document.querySelector('.link-list');
 
    linkList.innerHTML = '';
 
